@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ucsdasone"
-version = "1.0.0-a.1"
+version = "1.0.0-a.2"
 description = "A web scraper for the UCSD AS One grade archive"
 readme = "README.md"
 authors = [ { name = "Jacob Lee", email = "Jacob.J.Lee@outlook.com" } ]
