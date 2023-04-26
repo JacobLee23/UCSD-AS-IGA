@@ -3,7 +3,11 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
+<<<<<<< HEAD
 name = "ucsdasone"
+=======
+name = "sabrmetrics"
+>>>>>>> 7ad8e5ce68baa4403765ad360a510e4d90827409
 version = "0.1.0"
 description = "A web scraper for the UCSD AS One grade archive"
 readme = "README.md"
