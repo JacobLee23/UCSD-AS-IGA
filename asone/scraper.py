@@ -79,8 +79,8 @@ class GradeArchive:
         """
         :return:
         """
-        return requests.post(self.address, self.form_data)
-    
+        return requests.post(self.address, self.form_data, timeout=100)
+
     def data(self) -> pd.DataFrame:
         """
         :return:
@@ -92,9 +92,9 @@ class GradeArchive:
                 return pd.DataFrame()
 
         assert len(dfs) == 1
-        df = dfs[0]
+        dataframe = dfs[0]
 
         columns = ["A", "B", "C", "D", "F", "W", "P", "NP"]
-        df[columns] = df[columns].applymap(lambda x: float(x.strip("%")))
+        dataframe[columns] = dataframe[columns].applymap(lambda x: float(x.strip("%")))
 
-        return df
+        return dataframe
