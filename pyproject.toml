@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ucsdasone"
-version = "1.0.0-a.2"
-description = "A web scraper for the UCSD AS One grade archive"
+version = "1.0.0-a.3"
+description = "An API wrapper and web scraper for the UCSD AS One grade archive"
 readme = "README.md"
 authors = [ { name = "Jacob Lee", email = "Jacob.J.Lee@outlook.com" } ]
 license = { file = "LICENSE" }
@@ -26,7 +26,7 @@ classifiers = [
 requires-python = ">=3.5"
 
 [project.urls]
-homepage = "https://github.com/JacobLee23/UCSDASOne"
+homepage = "https://github.com/JacobLee23/UCSD-AS-One"
 
 [tool.setuptools.packages.find]
 where = ["."]
