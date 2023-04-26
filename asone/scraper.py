@@ -80,3 +80,13 @@ class GradeArchive:
         :return:
         """
         return requests.post(self.address, self.form_data)
+    
+    def data(self) -> pd.DataFrame:
+        """
+        :return:
+        """
+        with self.request() as response:
+            dfs = pd.read_html(response.content)
+            assert len(dfs) == 1
+
+        return dfs[0]
