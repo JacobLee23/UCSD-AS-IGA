@@ -1,10 +1,11 @@
 import argparse
-import pkg_resources
+from importlib import metadata
 
 from .scraper import GradeArchive
 
 
-VERSION = pkg_resources.get_distribution("ucsdasone").version
+NAME = metadata.metadata("ucsdasone")["name"]
+VERSION = metadata.version("ucsdasone")
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -12,7 +13,7 @@ def _parser() -> argparse.ArgumentParser:
 
     parser.add_argument(
         "-v", "--version", action="version",
-        version=f"{parser.prog} {VERSION}"
+        version=f"{NAME} {VERSION}"
     )
     parser.add_argument("-q", "--quarter", type=str)
     parser.add_argument("-y", "--year", type=int)
