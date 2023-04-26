@@ -2,6 +2,7 @@
 """
 
 import datetime
+import pathlib
 import re
 import typing
 
@@ -74,22 +75,16 @@ class GradeArchive:
             "subject": self.subject,
             "courseNumber": self.code
         }
-        
-    def request(self) -> requests.Response:
-        """
-        :return:
-        """
-        return requests.post(self.address, self.form_data, timeout=100)
+        self.response = requests.post(self.address, self.form_data, timeout=100)
 
     def data(self) -> pd.DataFrame:
         """
         :return:
         """
-        with self.request() as response:
-            try:
-                dfs = pd.read_html(response.text)
-            except ValueError:
-                return pd.DataFrame()
+        try:
+            dfs = pd.read_html(self.response.text)
+        except ValueError:
+            return pd.DataFrame()
 
         assert len(dfs) == 1
         dataframe = dfs[0]
@@ -98,3 +93,20 @@ class GradeArchive:
         dataframe[columns] = dataframe[columns].applymap(lambda x: float(x.strip("%")))
 
         return dataframe
+
+    def export(self, path: typing.Union[str, pathlib.Path]) -> pathlib.Path:
+        """
+
+        :param path:
+        :return:
+        """
+        path = pathlib.Path(path)
+        dataframe = self.data()
+
+        if path.suffix == ".csv":
+            dataframe.to_csv(path)
+        else:
+            with open(path, "w", encoding="utf-8") as file:
+                dataframe.to_string(file)
+
+        return path

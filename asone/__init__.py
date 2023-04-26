@@ -1,5 +1,6 @@
 import argparse
 from importlib import metadata
+import pathlib
 
 from .scraper import GradeArchive
 
@@ -20,6 +21,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("-i", "--instructor", type=str)
     parser.add_argument("-s", "--subject", type=str)
     parser.add_argument("-c", "--code", type=str)
+    parser.add_argument("-o", "--output", type=str)
 
     return parser
 
@@ -35,5 +37,9 @@ def main() -> None:
         subject=args.subject,
         code=args.code
     )
+    dataframe = archive.data()
 
-    print(archive.data())
+    if args.output:
+        archive.export(args.output)
+
+    print(dataframe.to_string())
