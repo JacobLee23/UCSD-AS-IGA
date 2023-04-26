@@ -28,7 +28,7 @@ class GradeArchive:
         "all": "", "fall": "FA", "winter": "WI", "spring": "SP"
     }
     subject_regex = re.compile(r"^[A-Z]{3,4}$")
-    code_regex = re.compile(r"^\d{1,3}[A-Z]{1,2}$")
+    code_regex = re.compile(r"^\d{1,3}[A-Z]{0,2}$")
 
     def __init__(
         self,
@@ -39,36 +39,36 @@ class GradeArchive:
         code: typing.Optional[str] = None
     ):
         if isinstance(quarter, str):
-            self.quarter = quarter.lower().strip()
-            assert self.quarter in self.quarter_values
+            self.quarter = self.quarter_values[quarter.lower().strip()]
         else:
-            self.quarter = "all"
+            self.quarter = ""
 
         if isinstance(year, int):
             self.year = int(year)
             assert MIN_YEAR <= self.year <= MAX_YEAR
+            self.year = str(year)
         else:
-            self.year = None
+            self.year = ""
 
         if isinstance(instructor, str):
             self.instructor = instructor.strip()
         else:
-            self.instructor = None
+            self.instructor = ""
 
         if isinstance(subject, str):
             self.subject = subject.upper().strip()
             assert self.subject_regex.search(self.subject) is not None
         else:
-            self.subject = None
+            self.subject = ""
 
-        if isinstance(code, str):
-            self.code = code.upper().strip()
+        if isinstance(code, (str, int)):
+            self.code = (str(code) if isinstance(code, int) else code.upper().strip())
             assert self.code_regex.search(self.code) is not None
         else:
-            self.code = None
+            self.code = ""
 
         self.form_data = {
-            "quarter": self.quarter_values[self.quarter],
+            "quarter": self.quarter,
             "year": str(self.year),
             "instructor": self.instructor,
             "subject": self.subject,
@@ -86,7 +86,15 @@ class GradeArchive:
         :return:
         """
         with self.request() as response:
-            dfs = pd.read_html(response.content)
-            assert len(dfs) == 1
+            try:
+                dfs = pd.read_html(response.content)
+            except ValueError:
+                return pd.DataFrame()
+            
+        assert len(dfs) == 1
+        df = dfs[0]
 
-        return dfs[0]
+        columns = ["A", "B", "C", "D", "F", "W", "P", "NP"]
+        df[columns] = df[columns].applymap(lambda x: float(x.strip("%")))
+
+        return df
