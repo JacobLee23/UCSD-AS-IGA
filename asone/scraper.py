@@ -87,7 +87,7 @@ class GradeArchive:
         """
         with self.request() as response:
             try:
-                dfs = pd.read_html(response.content)
+                dfs = pd.read_html(response.text)
             except ValueError:
                 return pd.DataFrame()
 
