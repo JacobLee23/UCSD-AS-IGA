@@ -1,1 +1,1 @@
-# UCSD AS One
+# UCSD-AS-One
