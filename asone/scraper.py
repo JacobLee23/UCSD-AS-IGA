@@ -90,7 +90,7 @@ class GradeArchive:
                 dfs = pd.read_html(response.content)
             except ValueError:
                 return pd.DataFrame()
-            
+
         assert len(dfs) == 1
         df = dfs[0]
 
