@@ -1,1 +1,6 @@
 __pycache__/
+
+# IDE configurations
+.idea/
+.vs/
+.vscode/
