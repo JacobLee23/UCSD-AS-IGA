@@ -28,7 +28,7 @@ def main() -> None:
     parser = _parser()
     args = parser.parse_args()
 
-    dataframe = GradeArchive(
+    archive = GradeArchive(
         quarter=args.quarter,
         year=args.year,
         instructor=args.instructor,
@@ -36,4 +36,4 @@ def main() -> None:
         code=args.code
     )
 
-    print(dataframe)
+    print(archive.data())
