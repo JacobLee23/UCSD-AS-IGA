@@ -15,6 +15,7 @@ vermin = "*"
 pylint = "*"
 build = "*"
 twine = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.11"
