@@ -2,7 +2,6 @@
 """
 
 import datetime
-import pathlib
 import re
 import typing
 
@@ -85,20 +84,3 @@ class GradeArchive:
         dataframe[columns] = dataframe[columns].applymap(lambda x: float(x.strip("%")))
 
         return dataframe
-
-    def export(self, path: typing.Union[str, pathlib.Path]) -> pathlib.Path:
-        """
-
-        :param path:
-        :return:
-        """
-        path = pathlib.Path(path)
-        dataframe = self.data()
-
-        if path.suffix == ".csv":
-            dataframe.to_csv(path)
-        else:
-            with open(path, "w", encoding="utf-8") as file:
-                dataframe.to_string(file)
-
-        return path
