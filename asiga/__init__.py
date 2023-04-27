@@ -1,6 +1,5 @@
 import argparse
 from importlib import metadata
-import pathlib
 
 from .scraper import GradeArchive
 

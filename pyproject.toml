@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ucsdasone"
-version = "1.0.0-a.4"
-description = "An API wrapper and web scraper for the UCSD AS One instructor grade archive"
+name = "ucsdasiga"
+version = "1.0.0-a.5"
+description = "A simple API wrapper and web scraper for the UCSD Associated Students (AS) instructor grade archive."
 readme = "README.md"
 authors = [ { name = "Jacob Lee", email = "Jacob.J.Lee@outlook.com" } ]
 license = { file = "LICENSE" }
@@ -30,4 +30,4 @@ homepage = "https://github.com/JacobLee23/UCSD-AS-One"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["asone*"]
+include = ["asiga*"]
