@@ -25,9 +25,7 @@ class GradeArchive:
     """
     address = "https://as.ucsd.edu/Home/InstructorGradeArchive"
 
-    quarter_values = {
-        "all": "", "fall": "FA", "winter": "WI", "spring": "SP"
-    }
+    quarter_values = ["FA", "WI", "SP"]
     subject_regex = re.compile(r"^[A-Z]{3,4}$")
     code_regex = re.compile(r"^\d{1,3}[A-Z]{0,2}$")
 
@@ -39,34 +37,28 @@ class GradeArchive:
         subject: typing.Optional[str] = None,
         code: typing.Optional[str] = None
     ):
-        if isinstance(quarter, str):
-            self.quarter = self.quarter_values[quarter.lower().strip()]
-        else:
-            self.quarter = ""
+        self.quarter = ""
+        if isinstance(quarter, str) and quarter.upper() in self.quarter_values:
+            self.quarter = quarter.upper()
 
+        self.year = ""
         if isinstance(year, int):
             self.year = int(year)
             assert MIN_YEAR <= self.year <= MAX_YEAR
-            self.year = str(year)
-        else:
-            self.year = ""
 
+        self.instructor = ""
         if isinstance(instructor, str):
             self.instructor = instructor.strip()
-        else:
-            self.instructor = ""
 
+        self.subject = ""
         if isinstance(subject, str):
             self.subject = subject.upper().strip()
             assert self.subject_regex.search(self.subject) is not None
-        else:
-            self.subject = ""
 
+        self.code = ""
         if isinstance(code, (str, int)):
             self.code = (str(code) if isinstance(code, int) else code.upper().strip())
             assert self.code_regex.search(self.code) is not None
-        else:
-            self.code = ""
 
         self.form_data = {
             "quarter": self.quarter,
