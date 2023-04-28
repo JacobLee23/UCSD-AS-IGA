@@ -1,7 +1,7 @@
 import argparse
 from importlib import metadata
 
-from .scraper import GradeArchive
+from .scraper import grade_archive
 
 
 NAME = metadata.metadata("ucsdasone")["name"]
@@ -16,7 +16,7 @@ def _parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "-v", "--version", action="version", version=f"$(prog) {VERSION}"
+        "-v", "--version", action="version", version=f"%(prog)s {VERSION}"
     )
     parser.add_argument(
         "-q", "--quarter", type=str,
@@ -46,13 +46,12 @@ def main() -> None:
     parser = _parser()
     args = parser.parse_args()
 
-    archive = GradeArchive(
+    dataframe = grade_archive(
         quarter=args.quarter,
         year=args.year,
         instructor=args.instructor,
         subject=args.subject,
         code=args.code
     )
-    dataframe = archive.data()
 
     print(dataframe.to_string())
