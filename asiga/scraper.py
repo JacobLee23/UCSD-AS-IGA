@@ -143,13 +143,17 @@ class GradeArchive:
         """
         """
         data = {
-            k: ("" if self[k] is None else str(self[k])) for k in self.fields
+            "quarter": "" if self.quarter is None else self.quarter,
+            "year": "" if self.year is None else str(self.year),
+            "instructor": "" if self.instructor is None else self.instructor,
+            "subject": "" if self.subject is None else self.subject,
+            "courseNumber": "" if self.code is None else self.code
         }
         with requests.post(self.address, data=data, timeout=100) as response:
             try:
                 dataframe = pd.read_html(response.text)[0]
             except ValueError:
-                return pd.DataFrame()
+                return pd.DataFrame({})
             
         columns = ["A", "B", "C", "D", "F", "W", "P", "NP"]
         dataframe[columns] = dataframe[columns].applymap(lambda x: float(x.strip("%")))
