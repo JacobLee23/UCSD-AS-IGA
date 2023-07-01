@@ -13,37 +13,35 @@ import requests
 
 class GradeArchive:
     """
-    .. py:attribute:: fields
-
     .. py:attribute:: quarters
+
+        A list of values to which :py:attr:`GradeArchive.quarter` can be set.
 
     .. py:attribute:: years
 
-    .. py:attribute:: address
+        A list of values to which :py:attr:`GradeArchive.year` can be set.
 
-    :param quarter:
-    :param year:
-    :param instructor:
-    :param subject:
-    :param code:
+    :param quarter: See :py:attr:`GradeArchive.quarter`.
+    :param year: See :py:attr:`GradeArchive.year`.
+    :param instructor: See :py:attr:`GradeArchive.instructor`.
+    :param subject: See :py:attr:`GradeArchive.subject`.
+    :param code: See :py:attr:`GradeArchive.code`.
     """
-    fields = ("quarter", "year", "instructor", "subject", "code")
+    _url = "https://as.ucsd.edu/Home/InstructorGradeArchive"
+    _headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/114.0"
+    }
+    _timeout = 100
 
-    quarters = ("FA", "WI", "SP")
-    years = range(15, datetime.datetime.today().year)
+    _fields: typing.List[str] = ["quarter", "year", "instructor", "subject", "code"]
+    quarters: typing.List[str] = ["FA", "WI", "SP"]
+    years: typing.List[int] = list(range(15, datetime.datetime.today().year))
 
-    address = "https://as.ucsd.edu/Home/InstructorGradeArchive"
-
-    def __init__(
-        self, *, quarter: typing.Optional[str] = None, year: typing.Optional[int] = None,
-        instructor: typing.Optional[str] = None, subject: typing.Optional[str] = None,
-        code: typing.Optional[str] = None
-    ):
-        self.quarter = quarter
-        self.year = year
-        self.instructor = instructor
-        self.subject = subject
-        self.code = code
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            if key not in self._fields:
+                raise AttributeError(key)
+            self.__setattr__(key, value)
 
     def __getitem__(self, key: str) -> typing.Optional[typing.Union[str, int]]:
         return self.__getattribute__(key)
@@ -51,10 +49,14 @@ class GradeArchive:
     @property
     def quarter(self) -> typing.Optional[str]:
         """
-        Filters results to a specific quarter. (See :py:attr:`GradeArchive.quarters`.)
+        Filters results to a specific quarter.
+
+        .. note::
+
+            See :py:attr:`GradeArchive.quarters` for property options.
         """
         return self._quarter
-    
+
     @quarter.setter
     def quarter(self, value: typing.Optional[str]) -> None:
         """
@@ -65,14 +67,18 @@ class GradeArchive:
             self._quarter = quarter if quarter in self.quarters else None
         else:
             self._quarter = None
-    
+
     @property
     def year(self) -> typing.Optional[int]:
         """
-        Filters results to a specific year. (See :py:attr:`GradeArchive.years`.)
+        Filters results to a specific year.
+
+        .. note::
+
+            See :py:attr:`GradeArchive.years` for property options.
         """
         return self._year
-    
+
     @year.setter
     def year(self, value: typing.Optional[int]) -> None:
         """
@@ -86,10 +92,14 @@ class GradeArchive:
     @property
     def instructor(self) -> typing.Optional[str]:
         """
-        Filters results to classes taught by a specific instructor. (Use the format "{{Last Name}}, {{First Name}}".)
+        Filters results to classes taught by a specific instructor.
+
+        .. note::
+
+            Format: `{{Last Name}}, {{First Name}}`.
         """
         return self._instructor
-    
+
     @instructor.setter
     def instructor(self, value: typing.Optional[str]) -> None:
         """
@@ -106,7 +116,7 @@ class GradeArchive:
         Filters results to classes taught in a specific department.
         """
         return self._subject
-    
+
     @subject.setter
     def subject(self, value: typing.Optional[str]) -> None:
         """
@@ -125,7 +135,7 @@ class GradeArchive:
         Filters results to a specific course number.
         """
         return self._code
-    
+
     @code.setter
     def code(self, value: typing.Optional[str]) -> None:
         """
@@ -149,12 +159,14 @@ class GradeArchive:
             "subject": "" if self.subject is None else self.subject,
             "courseNumber": "" if self.code is None else self.code
         }
-        with requests.post(self.address, data=data, timeout=100) as response:
+        with requests.post(
+            self._url, data=data, headers=self._headers, timeout=self._timeout
+        ) as response:
             try:
                 dataframe = pd.read_html(response.text)[0]
             except ValueError:
                 return pd.DataFrame({})
-            
+
         columns = ["A", "B", "C", "D", "F", "W", "P", "NP"]
         dataframe[columns] = dataframe[columns].applymap(lambda x: float(x.strip("%")))
 
@@ -167,7 +179,10 @@ class Parser(argparse.ArgumentParser):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.add_argument("-v", "--version", action="version", version=f"%(prog)s {metadata.version('ucsdasone')}")
+        self.add_argument(
+            "-v", "--version", action="version",
+            version=f"%(prog)s {metadata.version('ucsdasone')}"
+        )
         self.add_argument("-q", "--quarter", type=str, help=GradeArchive.quarter.__doc__)
         self.add_argument("-y", "--year", type=int, help=GradeArchive.year.__doc__)
         self.add_argument("-i", "--instructor", type=str, help=GradeArchive.instructor.__doc__)
