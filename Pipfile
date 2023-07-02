@@ -4,17 +4,15 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pandas = "*"
 requests = "*"
+pandas = "*"
 lxml = "*"
-html5lib = "*"
-beautifulsoup4 = "*"
 
 [dev-packages]
-vermin = "*"
-pylint = "*"
 build = "*"
 twine = "*"
+pylint = "*"
+vermin = "*"
 
 [requires]
 python_version = "3.11"
